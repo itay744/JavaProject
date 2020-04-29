@@ -2,15 +2,16 @@ import java.util.Random;
 
 abstract public class Animal {
 	private String gender;
-	private int age;
-	private char name;
+	private double age;
+	protected char name;
 
 	public Animal() {
 		Random random = new Random();
-		String[] genders = { "Male", "Women" };
+		String[] genders = { "Male", "Female" };
 		int selected = random.nextInt(2);
 		gender = genders[selected];
-		age = (int) Math.random() * 100;
+		age = Math.random() * 100;
+		age = (int) age;
 	}
 
 	abstract public boolean checkMatching(Animal animal); // // abstract method for the son's classes
@@ -20,17 +21,16 @@ abstract public class Animal {
 		return this.name == animal.name;
 	}
 
-	public String getGender() { 
-
-		return new String(gender);
-	}
-
-	public int getAge() {
-		return age;
-	}
-
 	public char getName() {
 		return name;
+	}
+
+	public boolean isPiranha() {
+		return false;
+	}
+
+	public boolean isShark() {
+		return false;
 	}
 
 }

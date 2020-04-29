@@ -1,8 +1,8 @@
 
 public class Denis extends Fish {
-	private char name;
-
+	
 	public Denis() {
+
 		super();
 		name = 'D';
 	}
@@ -14,12 +14,4 @@ public class Denis extends Fish {
 	public char getName() {
 		return name;
 	}
-
-	
-	public boolean equals (Animal animal) {
-		return this.name == animal.getName();
-	}
-
-
-
 }

@@ -4,6 +4,8 @@ abstract public class Reptiles extends Animal {
 	public Reptiles() {
 		super();
 	}
-
-	abstract public boolean checkMatching(Animal animal);
+	public boolean checkMatching(Animal animal) {
+		return(animal instanceof Reptiles && !(animal instanceof Viper) ||
+				animal instanceof Kangaroo);
+	}
 }

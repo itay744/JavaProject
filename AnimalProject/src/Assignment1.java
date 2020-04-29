@@ -6,7 +6,7 @@ public class Assignment1 {
 	public static final char COVERED = '#';
 	public static final String YES = "y";
 	public static final String NO = "n";
-	// יש תקלה כאשר בוחרים אחרי שנבחרה פיראנה או כריש - ניתן איכשהו לקבל גם מספר שנבחר כבר.
+	
 
 	public static char[][] initHiddenBoard() { // Creating the hidden numbers board
 		char[][] board = new char[5][4];
@@ -28,13 +28,15 @@ public class Assignment1 {
 		}
 	}
 
-	public static int firstMove(char[][] arr) { // function for the first player choice.
-		return move(arr, "first");
+	public static int firstMove(char[][] board) { // function for the first player choice.
+		int choice = move(board, "first");
+		choice = checkFirstMove(choice, board);
+		return choice;
 	}
 
-	public static int secondMove(char[][] arr) { // function for the second player choice.
-		int secondMove = move(arr, "second");
-		
+	public static int secondMove(char[][] board, int firstChoice) { // function for the second player choice.
+		int secondMove = move(board, "second");
+		secondMove = checkSecondMove(secondMove, board, firstChoice);
 		return secondMove;
 	}
 
@@ -65,17 +67,16 @@ public class Assignment1 {
 	}
 
 	public static boolean compareChoice(int choice1, int choice2, Animal[][] animalBoard) { 
-		return (animalBoard[choice1 / 10][choice1 % 10].checkMatching(animalBoard[choice2 / 10][choice2 % 10]));
+		return (animalBoard[row(choice1)][col(choice1)].
+				checkMatching(animalBoard[row(choice2)][col(choice2)]));
 	}
 
 	public static boolean checkForDenis(char[][] board, int choice1, int choice2, Animal[][] animalBoard) {// check id denis around choices																							// denis
-		return (isDenisFound(choice1, board, animalBoard) || isDenisFound(choice2, board, animalBoard));
+		return (isDenisFound(choice1,board, animalBoard) || isDenisFound(choice2,board, animalBoard));
 	}
 
 	public static boolean checkIfGameOver(char[][] board, Animal[][] animalBoard) { 
 		int counter = 0;
-		char firstChar = MATCH;
-		char secondChar = '@';
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[0].length; j++) {
 				if (board[i][j] == MATCH) {
@@ -106,8 +107,8 @@ public class Assignment1 {
 	public static char getNameFromBoard(int place, Animal[][] animalBoard) { // return the char in
 																								// choosen
 		// place
-		char currentChar = animalBoard[place / 10][place % 10].getName();
-		return currentChar;
+		char currentName = animalBoard[place / 10][place % 10].getName();
+		return currentName;
 	}
 
 	public static void turnBack(int number, char[][] board) { // putting back '#' in the number place inside the chars
@@ -116,23 +117,23 @@ public class Assignment1 {
 		;
 	}
 
-	private static boolean legalRow(char c) { // check if row is legal
+	private static boolean isLegalRow(char c) { // check if row is legal
 
 		return c >= '0' && c <= '4';
 	}
 
-	private static boolean legalCol(char c) { // check if col is legal
+	private static boolean isLegalCol(char c) { // check if col is legal
 		return c >= '0' && c <= '3';
 	}
 
-	public static int stringToInt(String number) { // changing string to integer.
-		int num1 = number.charAt(0) - '0';
-		int num2 = number.charAt(1) - '0';
+	public static int stringToInt(String input) { // changing string to integer.
+		int num1 = input.charAt(0) - '0';
+		int num2 = input.charAt(1) - '0';
 		return num1 * 10 + num2;
 	}
 
 	public static boolean legalChoice(String choice) { // check if the choice is legal
-		return choice.length() == 2 && legalRow(choice.charAt(0)) && legalCol(choice.charAt(1));
+		return choice.length() == 2 && isLegalRow(choice.charAt(0)) && isLegalCol(choice.charAt(1));
 	}
 
 	public static boolean checkIfWantPlay() { // after game-over, checking if the player wants to restart the game.
@@ -146,34 +147,34 @@ public class Assignment1 {
 	}
 
 	public static boolean alredyMatch(int place, char[][] board) { // checks if the chosen input is already matched.
-		return (board[place / 10][place % 10] == MATCH);
+		return (board[row(place)][col(place)] == MATCH);
 	}
 
-	public static void checkFirstMove(int playerPick, char[][] board) {// checks if first move is valide
+	public static int checkFirstMove(int playerPick, char[][] board) {// checks if first move is valide
 		while (alredyMatch(playerPick, board)) {
 			System.out.println("Sorry, wrong input. Please try again.");
 			printBoard(board);
 			playerPick = firstMove(board);
 		}
+		return playerPick;
 	}
 
-	public static void checkSecondMove(int playerPick, char[][] board, int firstChoice) { // checks if second move is
+	public static int checkSecondMove(int playerPick, char[][] board, int firstChoice) { // checks if second move is
 																							// valide
 		while (alredyMatch(playerPick, board) || playerPick == firstChoice) {
 			System.out.println("Sorry, wrong input. Please try again.");
 			printBoard(board);
-			playerPick = secondMove(board);
+			playerPick = secondMove(board, firstChoice);
 		}
+		return playerPick;
 	}
 
 	public static void doTurn(char[][] board, Animal[][] animalBoard, boolean gameOver) { // making one turn
 		printBoard(board);
 		int firstChoice = firstMove(board);// first move
-		checkFirstMove(firstChoice, board);
 		turnCard(firstChoice, board, animalBoard);// turn to number card
 		printBoard(board);
-		int secondChoice = secondMove(board);// second move
-		checkSecondMove(secondChoice, board, firstChoice);
+		int secondChoice = secondMove(board, firstChoice);// second move
 		turnCard(secondChoice, board, animalBoard);// turn to number card
 		printBoard(board);
 		if (checkMatch(board, firstChoice, secondChoice, animalBoard)) { // if the two numbers matches.
@@ -253,7 +254,8 @@ public class Assignment1 {
 	}
 
 	public static void mixCards(Animal[][] animalBoard) {
-		while (!shuffleIsLegal(animalBoard)) {
+		shuffle(animalBoard);
+		while (!isShuffleLegal(animalBoard)) {
 			shuffle(animalBoard);
 		}
 	}
@@ -271,12 +273,11 @@ public class Assignment1 {
 		}
 	}
 
-	public static boolean shuffleIsLegal(Animal[][] animalBoard) { // checks if there is places that are not legal, same
+	public static boolean isShuffleLegal(Animal[][] animalBoard) { // checks if there is places that are not legal, same
 																	// animal next
-		// to the other.
 		for (int i = 0; i < animalBoard.length; i++) {
 			for (int j = 0; j < animalBoard[0].length; j++) {
-				if (isNeighborEqual(i, j, animalBoard[i][j], animalBoard)) {
+				if (checkAllNeighbors(i, j, animalBoard[i][j], animalBoard)) {
 					return false;
 				}
 			}
@@ -284,20 +285,20 @@ public class Assignment1 {
 		return true;
 	}
 
-	public static boolean isNeighborEqual(int row, int column, Animal currentAnimal, Animal[][] animalBoard) { 
+	public static boolean checkAllNeighbors(int row, int column, Animal currentAnimal, Animal[][] animalBoard) { 
 		return checkNeighbor(row, column + 1, currentAnimal, animalBoard)
 				|| checkNeighbor(row, column - 1, currentAnimal, animalBoard)
 				|| checkNeighbor(row + 1, column, currentAnimal, animalBoard)
 				|| checkNeighbor(row - 1, column, currentAnimal, animalBoard);
 	}
 
-	public static boolean checkNeighbor(int row, int column, Animal currentAnimal, Animal[][] animalBoard) {
-		return ((placeIsLegal(row, column, animalBoard)) && (animalBoard[row][column].equals(currentAnimal)));
+	public static boolean checkNeighbor(int row, int col, Animal currentAnimal, Animal[][] animalBoard) {
+		return ((isPlaceLegal(row, col, animalBoard)) && (animalBoard[row][col].equals(currentAnimal)));
 
 	}
 
 	public static Animal thisAnimal(int place, Animal[][] animalBoard) { // returns the animal in a specific place.
-		return animalBoard[row(place)][column(place)];
+		return animalBoard[row(place)][col(place)];
 	}
 
 	public static boolean empty(int row, int column, Animal[][] animalBoard) { // checks if the specific place inside
@@ -305,7 +306,7 @@ public class Assignment1 {
 		return animalBoard[row][column] == null;
 	}
 
-	public static boolean placeIsLegal(int row, int column, Animal[][] animalBoard) { // checks if the place is legal.
+	public static boolean isPlaceLegal(int row, int column, Animal[][] animalBoard) { // checks if the place is legal.
 		return row >= 0 && row <= 4 && column >= 0 && column <= 3 && !empty(row, column, animalBoard);
 	}
 
@@ -313,7 +314,7 @@ public class Assignment1 {
 		return place / 10;
 	}
 
-	public static int column(int place) { // returns the column.
+	public static int col(int place) { // returns the column.
 		return place % 10;
 	}
 
@@ -352,17 +353,16 @@ public class Assignment1 {
 		}
 	}
 
-	public static boolean isDenisFound(int place, char[][] arr, Animal[][] animalBoard) { // check if neighbor is denis																// the
+	public static boolean isDenisFound(int place, char[][] board, Animal[][] animalBoard) { // check if neighbor is denis																// the
 		int row = row(place);
-		int col = column(place);
-		return isDenisThere(row + 1, col, arr, animalBoard) || isDenisThere(row - 1, col, arr, animalBoard)
-				|| isDenisThere(row, col + 1, arr, animalBoard) || isDenisThere(row, col - 1, arr, animalBoard);
+		int col = col(place);
+		return isDenisThere(row + 1, col,board, animalBoard) || isDenisThere(row - 1, col,board, animalBoard)
+				|| isDenisThere(row, col + 1,board, animalBoard) || isDenisThere(row, col - 1,board, animalBoard);
 	}
 
 	public static boolean isDenisThere(int row, int col, char[][] arr, Animal[][] animalBoard) {
-		return (placeIsLegal(row, col, animalBoard) && animalBoard[row][col].getName() == 'D'
+		return (isPlaceLegal(row, col, animalBoard) && animalBoard[row][col].getName() == 'D'
 				&& arr[row][col] != MATCH);
-
 	}
 
 	public static int countCovered(char[][] board) { // counts covered cards.
@@ -378,24 +378,21 @@ public class Assignment1 {
 	}
 
 	public static boolean isPiranhaOrShark(int place1, int place2, Animal[][] animalBoard) { 
-		return (thisAnimal(place1, animalBoard).getName() == 'P' 
-				&& thisAnimal(place2, animalBoard).getName() == 'S')
-				|| (thisAnimal(place1, animalBoard).getName() == 'S'
-				&& thisAnimal(place2, animalBoard).getName() == 'P');
+		return (thisAnimal(place1, animalBoard).isPiranha()&& thisAnimal(place2, animalBoard).isShark()
+				|| thisAnimal(place2, animalBoard).isPiranha()&& thisAnimal(place1, animalBoard).isShark());
+		
 	}
-
+	
 	public static boolean isNoMoreMatchLeft(char[][] board, Animal[][] animalBoard) { 											// matches.
 		Animal[] remainAnimals = checkRemainAnimals(board, animalBoard);
-		boolean flag = true;
 		for (int i = 0; i < remainAnimals.length; i++) {
 			for (int j = i+1; j < remainAnimals.length; j++) {
 				if (remainAnimals[i].checkMatching(remainAnimals[j])) {
-					flag = false;
-					return flag;
+					return false;
 				}
 			}
 		}
-		return flag;
+		return true;
 	}
 
 	public static Animal[] checkRemainAnimals(char[][] gameBoard, Animal[][] animalBoard) {
@@ -421,7 +418,6 @@ public class Assignment1 {
 	}
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
 		boolean play = true;
 		while (play) { // runs until play is false
 			playGame();

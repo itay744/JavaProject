@@ -1,6 +1,5 @@
 
 public class Lion extends Mammals{
-	private char name;
 
 	public Lion() {
 		super();
@@ -14,10 +13,4 @@ public class Lion extends Mammals{
 	public char getName() {
 		return name;
 	}
-	
-	public boolean equals (Animal animal) {
-		return this.name == animal.getName();
-	}
-
-
 }

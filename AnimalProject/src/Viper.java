@@ -1,6 +1,5 @@
 
 public class Viper extends Reptiles {
-	private char name;
 
 	public Viper() {
 		super();
@@ -14,10 +13,5 @@ public class Viper extends Reptiles {
 	public char getName() {
 		return name;
 	}
-
-	public boolean equals (Animal animal) {
-		return this.name == animal.getName();
-	}
-
-
+	
 }
