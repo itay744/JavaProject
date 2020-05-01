@@ -1,12 +1,13 @@
 
 public class Iguana extends Reptiles {
 	
-	public Iguana() {
+	public Iguana() {// constructor
 		super();
 		name = 'I';
-		// TODO Auto-generated constructor stub
+		
 	}
-	public char getName() {
+	
+	public char getName() {// return the name
 		return name;
 	}
 }

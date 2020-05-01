@@ -16,12 +16,12 @@ abstract public class Animal {
 
 	abstract public boolean checkMatching(Animal animal); // // abstract method for the son's classes
 
-	public boolean equals(Animal animal) {
+	public boolean equals(Animal animal) {// equals
 
 		return this.name == animal.name;
 	}
 
-	public char getName() {
+	public char getName() {// getter
 		return name;
 	}
 

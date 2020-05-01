@@ -5,7 +5,7 @@ public class Piranha extends Fish{
 		super();
 		name = 'P';
 	}
-	public char getName() {
+	public char getName() {// return the name
 		return name;
 	}
 }

@@ -7,11 +7,11 @@ public class Denis extends Fish {
 		name = 'D';
 	}
 
-	public boolean checkMatching(Animal animal) {
+	public boolean checkMatching(Animal animal) {// check match
 		return (animal instanceof Denis || animal instanceof Kangaroo);
 	}
 
-	public char getName() {
+	public char getName() {// return the name
 		return name;
 	}
 }
