@@ -412,9 +412,21 @@ public class AnimalGame {
 
 	public static Animal[][] createAnimalBoard() {
 		Animal[][] animalBoard = new Animal[5][4];
+		Animal[][] animalBoard2 = new Animal[5][4];
 		insertAnimals(animalBoard);// insert animals to board
 		mixCards(animalBoard);// mix the animal cards in board
-		return animalBoard;
+		animalBoard2 = copyBoards(animalBoard);
+		return animalBoard2;
+	}
+	
+	public static Animal[][] copyBoards (Animal[][] animalBoard) {
+		Animal[][] animalBoard2 = new Animal[5][4];
+		for (int i = 0; i < animalBoard.length; i++) {
+			for (int j = 0; j < animalBoard[0].length; j++) {
+				animalBoard2[i][j] = animalBoard[i][j];
+			}
+		}
+		return animalBoard2;
 	}
 
 	public static void main(String[] args) {
